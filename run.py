@@ -1,4 +1,4 @@
-from flask import Flask, request, send_file, after_this_request
+from flask import Flask, request, send_file
 import os
 from uuid import uuid4
 import sys
@@ -10,8 +10,7 @@ app = Flask(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 OUTPUT_DIR = f'{BASE_DIR}/output'
 ffmpeg = 'ffmpeg' if sys.platform == 'win32' else './ffmpeg'
-# standard_params = '-hide_banner -loglevel error -stats -v quiet -y'
-standard_params = ''
+standard_params = '-hide_banner -loglevel error -stats -v quiet -y'
 max_length = 250
 max_image_size = 5 * 1024 * 1024 # 5MB
 speed = 1.4
@@ -40,7 +39,6 @@ def generate_video():
 
         os.system(f"""{ffmpeg} {standard_params} -i {image_path} -filter_complex "[0:v]crop=in_h*0.5625:in_h,scale=720x1280[out]" -map "[out]" -preset ultrafast {output_image_file}""")
         
-
         tts = gTTS(text=text, lang='en', tld='us')
         audio_file = f'{current_dir}/{uuid}.mp3'
         output_audio_file = f'{current_dir}/{uuid}_output.mp3'
